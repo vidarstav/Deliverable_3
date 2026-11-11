@@ -1,5 +1,4 @@
-# Object-oriented game simulator
-# Turid Torheim, NMBU, 2026
+
 
 class Character:
     """Represents a character in the RPG"""
@@ -18,18 +17,27 @@ class Character:
         self.hp_max = hp_max
         self.damage = damage
 
+    def take_damage(self, damage: int) -> None:
+        """Reduces character's hp by damage amount"""
+        self._hp -= damage
+        self._hp = max(self._hp, 0)  # HP cannot end up lower than 0
+
+    def heal(self, amount: int) -> None:
+        """Restores character's HP by the specified amount, up to hp_max."""
+        if amount > 0:
+            self._hp = min(self._hp + amount, self.hp_max)
+
     def attack(self, target) -> None:
         """Attack and deal damage to target character"""
-        target._hp -= self.damage
-        target._hp = max(target._hp, 0)  # Target hp cannot end up lower than 0
+        target.take_damage(self.damage)
 
     def introduce(self) -> None:
-        """Creates string that introduces character"""
+        """Prints a string that introduces character"""
         print(f"Hi, my name is {self.name}!")
 
     def __repr__(self) -> str:
         """Representation of character object"""
-        return f"<Character name={self.name} hp={self.hp} damage={self.damage}>)"
+        return f"<Character name={self.name} hp={self.hp} damage={self.damage}>"
 
     def __str__(self) -> str:
         """String representation of character object"""
@@ -39,3 +47,8 @@ class Character:
     def hp(self) -> int:
         """Public read-only property to inspect HP without allowing direct, unsafe edits."""
         return self._hp
+
+    @property
+    def is_alive(self) -> bool:
+        """Returns True if character is alive (hp > 0), False otherwise"""
+        return self._hp > 0
