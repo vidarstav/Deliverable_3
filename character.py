@@ -10,17 +10,17 @@ class Character:
         Args:
             name (str): The name of the character.
             hp_max (int): Max hit points (default = 100)
-            damage (int): Damage delt when character attacks (default = 10)
+            damage (int): Damage dealt when character attacks (default = 10)
         """
         self.name = name
-        self._hp = hp_max  # Note: _hp indicated private attribute
+        self._hp = hp_max  # Note: _hp indicates private attribute
         self.hp_max = hp_max
         self.damage = damage
 
     def take_damage(self, damage: int) -> None:
         """Reduces character's hp by damage amount"""
         self._hp -= damage
-        self._hp = max(self._hp, 0)  # HP cannot end up lower than 0
+        self._hp = max(self._hp, 0)  # HP cannot be lower than 0
 
     def heal(self, amount: int) -> None:
         """Restores character's HP by the specified amount, up to hp_max."""
@@ -56,22 +56,54 @@ class Character:
 
 
 class Warrior(Character):
-    """A Warrior character class that inherits from Character"""
+    """A Warrior class that inherits from Character"""
 
-    def __init__(self, name: str, hp_max: int = 120, damage: int = 15, armor: int = 5) -> None:
+    def __init__(self, name: str, hp_max: int = 100, damage: int = 10, armor: int = 5) -> None:
         """
         Initialise the Warrior
 
         Args:
             name (str): The name of the warrior.
-            hp_max (int): Max hit points (default = 120)
-            damage (int): Damage dealt when warrior attacks (default = 15)
+            hp_max (int): Max hit points (default = 100)
+            damage (int): Damage dealt when warrior attacks (default = 10)
             armor (int): Armor value that reduces incoming damage (default = 5)
         """
-        self.armor = armor
         super().__init__(name, hp_max, damage)
+        self.armor = armor
+        
 
     def take_damage(self, damage: int) -> None:
         """Reduces warrior's hp by damage amount, considering armor"""
         reduced_damage = max(damage - self.armor, 0)  # Ensure low damage doesn't heal the warrior
         super().take_damage(reduced_damage)
+
+
+
+
+class Mage(Character):
+    """A Mage class that inherits from Character"""
+
+    def __init__(self, name: str, hp_max: int = 100, damage: int = 10, mana: int = 30, mana_max: int = 30) -> None:
+        """
+        Initialise the Mage
+
+        Args:
+            name (str): The name of the mage.
+            hp_max (int): Max hit points (default = 100)
+            damage (int): Damage dealt when mage attacks (default = 10)
+            mana (int): Current mana value (default = 30)
+            mana_max (int): Max mana value (default = 30)
+        """
+        super().__init__(name, hp_max, damage)
+        self.mana = min(mana, mana_max)
+        self.mana_max = mana_max
+
+    def attack(self, target) -> None:   
+        """Attack and deal damage to target character, consuming mana"""
+        if self.mana >= 10:  # Check if the mage has enough mana to perform a special attack
+            double_damage = self.damage * 2  # Double the damage for a special attack
+            self.mana -= 10
+            target.take_damage(double_damage)
+        else:
+            super().attack(target)  # Regular attack if not enough mana
+
