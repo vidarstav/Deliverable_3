@@ -29,4 +29,10 @@ class Dice:
     def __call__(self) -> int:
         """Allows the dice to be called like a function to roll it."""
         return self.roll()
-    
+
+
+#test
+'''
+d20 = Dice(sides=20)
+print(d20())
+'''
