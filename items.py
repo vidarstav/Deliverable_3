@@ -1,4 +1,4 @@
-from Dice import Dice
+from dice import Dice
 
 
 class Weapon:

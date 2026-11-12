@@ -33,7 +33,7 @@ class Battle:
 
 if __name__ == "__main__":
     from character import Mage, Warrior
-    from Dice import Dice
+    from dice import Dice
     from items import Weapon
 
     hero = Warrior("Conan", weapon=Weapon("Sword", Dice(sides=8)))
