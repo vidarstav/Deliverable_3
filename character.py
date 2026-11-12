@@ -52,3 +52,26 @@ class Character:
     def is_alive(self) -> bool:
         """Returns True if character is alive (hp > 0), False otherwise"""
         return self._hp > 0
+
+
+
+class Warrior(Character):
+    """A Warrior character class that inherits from Character"""
+
+    def __init__(self, name: str, hp_max: int = 120, damage: int = 15, armor: int = 5) -> None:
+        """
+        Initialise the Warrior
+
+        Args:
+            name (str): The name of the warrior.
+            hp_max (int): Max hit points (default = 120)
+            damage (int): Damage dealt when warrior attacks (default = 15)
+            armor (int): Armor value that reduces incoming damage (default = 5)
+        """
+        self.armor = armor
+        super().__init__(name, hp_max, damage)
+
+    def take_damage(self, damage: int) -> None:
+        """Reduces warrior's hp by damage amount, considering armor"""
+        reduced_damage = max(damage - self.armor, 0)  # Ensure low damage doesn't heal the warrior
+        super().take_damage(reduced_damage)
