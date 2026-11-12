@@ -106,4 +106,5 @@ class Mage(Character):
             target.take_damage(double_damage)
         else:
             super().attack(target)  # Regular attack if not enough mana
-
+            self.mana += 5 # Regenerate some mana if not enough to perform a special attack
+            self.mana = min(self.mana, self.mana_max)  # Ensure mana doesn't exceed max value
