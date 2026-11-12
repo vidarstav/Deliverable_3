@@ -1,21 +1,27 @@
+from __future__ import annotations
+
+from items import Weapon
 
 
 class Character:
     """Represents a character in the RPG"""
 
-    def __init__(self, name: str, hp_max: int = 100, damage: int = 10) -> None:
+    def __init__(self, name: str, hp_max: int = 100, damage: int = 10,
+                 weapon: Weapon | None = None) -> None:
         """
         Initialise the Character
 
         Args:
             name (str): The name of the character.
             hp_max (int): Max hit points (default = 100)
-            damage (int): Damage dealt when character attacks (default = 10)
+            damage (int): Damage dealt when character attacks without a weapon (default = 10)
+            weapon (Weapon | None): Optional weapon. If given, attack damage is rolled with it (default = None)
         """
         self.name = name
         self._hp = hp_max  # Note: _hp indicates private attribute
         self.hp_max = hp_max
         self.damage = damage
+        self.weapon = weapon
 
     def take_damage(self, damage: int) -> None:
         """Reduces character's hp by damage amount"""
@@ -27,9 +33,17 @@ class Character:
         if amount > 0:
             self._hp = min(self._hp + amount, self.hp_max)
 
-    def attack(self, target) -> None:
-        """Attack and deal damage to target character"""
-        target.take_damage(self.damage)
+    def attack(self, target: "Character") -> None:
+        """Attack and deal damage to target character.
+
+        Uses the weapon's damage roll if the character has a weapon,
+        otherwise the fixed damage value.
+        """
+        if self.weapon is not None:
+            damage = self.weapon.roll_damage()
+        else:
+            damage = self.damage
+        target.take_damage(damage)
 
     def introduce(self) -> None:
         """Prints a string that introduces character"""
@@ -58,7 +72,8 @@ class Character:
 class Warrior(Character):
     """A Warrior class that inherits from Character"""
 
-    def __init__(self, name: str, hp_max: int = 100, damage: int = 10, armor: int = 5) -> None:
+    def __init__(self, name: str, hp_max: int = 100, damage: int = 10, armor: int = 5,
+                 weapon: Weapon | None = None) -> None:
         """
         Initialise the Warrior
 
@@ -67,8 +82,9 @@ class Warrior(Character):
             hp_max (int): Max hit points (default = 100)
             damage (int): Damage dealt when warrior attacks (default = 10)
             armor (int): Armor value that reduces incoming damage (default = 5)
+            weapon (Weapon | None): Optional weapon (default = None)
         """
-        super().__init__(name, hp_max, damage)
+        super().__init__(name, hp_max, damage, weapon)
         self.armor = armor
         
 
@@ -83,7 +99,8 @@ class Warrior(Character):
 class Mage(Character):
     """A Mage class that inherits from Character"""
 
-    def __init__(self, name: str, hp_max: int = 100, damage: int = 10, mana: int = 30, mana_max: int = 30) -> None:
+    def __init__(self, name: str, hp_max: int = 100, damage: int = 10, mana: int = 30, mana_max: int = 30,
+                 weapon: Weapon | None = None) -> None:
         """
         Initialise the Mage
 
@@ -93,12 +110,13 @@ class Mage(Character):
             damage (int): Damage dealt when mage attacks (default = 10)
             mana (int): Current mana value (default = 30)
             mana_max (int): Max mana value (default = 30)
+            weapon (Weapon | None): Optional weapon (default = None)
         """
-        super().__init__(name, hp_max, damage)
+        super().__init__(name, hp_max, damage, weapon)
         self.mana = min(mana, mana_max)
         self.mana_max = mana_max
 
-    def attack(self, target) -> None:   
+    def attack(self, target: Character) -> None:
         """Attack and deal damage to target character, consuming mana"""
         if self.mana >= 10:  # Check if the mage has enough mana to perform a special attack
             double_damage = self.damage * 2  # Double the damage for a special attack
